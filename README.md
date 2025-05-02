@@ -3,7 +3,7 @@
 Open-source full-stack seed project that uses a `React UI` powered by a simple `Flask API Server`. **[React Flask Authentication](https://blog.appseed.us/react-flask-authentication/)** sample can be used to bootstrap fast a new project using a tested `development-ready` stack or simply for eLearning purposes by beginners. For newcomers, **React** is a popular Javascript library for coding user interfaces baked by Facebook and Flask is a leading web framework written in Python. 
 
 - 👉 [React Flask Authentication](https://react-flask-authentication.appseed-srv1.com/) - LIVE Demo
-- 👉 LIVE [Support](https://react-flask-authentication.appseed-srv1.com/) via [Discord](https://discord.gg/fZC6hup) - provided by AppSeed
+- 👉 LIVE [Support](https://react-flask-authentication.appseed-srv1.com/) via [Discord](https://discord.gg/fZC6hup) - provided by [App-Generator](https://app-generator.dev/)
 
 <br />
 
@@ -202,9 +202,9 @@ authorization: JWT_TOKEN (returned by Login request)
 ## ✨ Links & Resources
 
 - Ask for [Support](https://appseed.us/support) on [Discord](https://discord.gg/fZC6hup)
-- See for [React Starters](https://appseed.us/apps/react) - index provided by AppSeed
+- See for [React Starters](https://app-generator.dev/product/?search=react) - index provided by [App-Generator](https://app-generator.dev/)
 
 <br />
 
 ---
-**[React Flask Authentication](https://blog.appseed.us/react-flask-authentication/)** - Open-source full-stack seed project provided by **[AppSeed](https://appseed.us/)**
+**[React Flask Authentication](https://blog.appseed.us/react-flask-authentication/)** - Open-source full-stack seed project provided by **[App-Generator](https://app-generator.dev/)**
