@@ -1,62 +1,65 @@
 name: CI/CD Pipeline
 
-# Trigger this workflow on push to main branch
+# Trigger on push to staging or main branches
 on:
   push:
-    branches: [ main ]
+    branches: [ main, staging ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, staging ]
 
-# Define the jobs to run
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     
     steps:
-      # Step 1: Checkout the code from GitHub
       - name: Checkout code
         uses: actions/checkout@v3
       
-      # Step 2: Set up Docker Buildx (for advanced Docker builds)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       
-      # Step 3: Log in to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       
-      # Step 4: Build and push Flask API image
+      # Determine image tags based on branch
+      - name: Set image tags
+        id: tags
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+            echo "flask_tags=tbains21/flask-api:latest,tbains21/flask-api:prod-${{ github.sha }}" >> $GITHUB_OUTPUT
+            echo "react_tags=tbains21/react-ui:latest,tbains21/react-ui:prod-${{ github.sha }}" >> $GITHUB_OUTPUT
+          else
+            echo "environment=staging" >> $GITHUB_OUTPUT
+            echo "flask_tags=tbains21/flask-api:staging,tbains21/flask-api:staging-${{ github.sha }}" >> $GITHUB_OUTPUT
+            echo "react_tags=tbains21/react-ui:staging,tbains21/react-ui:staging-${{ github.sha }}" >> $GITHUB_OUTPUT
+          fi
+      
       - name: Build and push Flask API
         uses: docker/build-push-action@v4
         with:
           context: ./api-server-flask
           push: true
-          tags: |
-            tbains21/flask-api:latest
-            tbains21/flask-api:${{ github.sha }}
+          tags: ${{ steps.tags.outputs.flask_tags }}
           cache-from: type=registry,ref=tbains21/flask-api:latest
           cache-to: type=inline
       
-      # Step 5: Build and push React UI image
       - name: Build and push React UI
         uses: docker/build-push-action@v4
         with:
           context: ./react-ui
           push: true
-          tags: |
-            tbains21/react-ui:latest
-            tbains21/react-ui:${{ github.sha }}
+          tags: ${{ steps.tags.outputs.react_tags }}
           build-args: |
             REACT_APP_BACKEND_SERVER=http://localhost:5001/api/
           cache-from: type=registry,ref=tbains21/react-ui:latest
           cache-to: type=inline
       
-      # Step 6: Print success message
-      - name: Image push successful
+      - name: Deployment summary
         run: |
-          echo "✅ Docker images successfully built and pushed!"
-          echo "Flask API: tbains21/flask-api:latest"
-          echo "React UI: tbains21/react-ui:latest"
+          echo "Deployed to ${{ steps.tags.outputs.environment }}"
+          echo "Flask API tags: ${{ steps.tags.outputs.flask_tags }}"
+          echo "React UI tags: ${{ steps.tags.outputs.react_tags }}"
